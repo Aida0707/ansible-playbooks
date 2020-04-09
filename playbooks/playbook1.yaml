@@ -1,7 +1,10 @@
 ---
-- name: First Playbook
+- name: My First Playbook
   hosts: all
   become: yes
   become_method: sudo
   tasks:
-  - name:
+  - name: install package
+    package: 
+      name: httpd
+      state: installed    
