@@ -1,5 +1,5 @@
 ---
-- name: Update Kernel
+- name: Updates Kernel
   hosts: all
   become: true
   become_method: sudo
@@ -10,12 +10,12 @@
       name: kernel
       state: latest
 
+  # - name: Reboot
+  #   shell: reboot
+  #   ignore_errors: true
 
-# - name: Reboot
-#   shell: reboot
-#   ignore_errors: true
 
-# # Do not assume the inventory_hostname is resolvable and delay 10 seconds at start
+  # # Do not assume the inventory_hostname is resolvable and delay 10 seconds at start
   # - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
   #   wait_for:
   #     port: 22
@@ -30,14 +30,16 @@
   #   dnf: 
   #     name: kernel
   #     state: latest
+
   # - name: Update kernel
   #   when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
   #   yum: 
   #     name: kernel
   #     state: latest
+
+
   # - name: Update kernel
   #   when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "8")
   #   apt: 
   #     name: kernel
   #     state: latest
-     
