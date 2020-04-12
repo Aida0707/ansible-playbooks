@@ -15,8 +15,7 @@
        - mariadb-server
       ignore_errors: true
 
-  
-     
+    - name: "sudo yum-config-manager --disable remi-php54 -y"
     - name: Install epel-release
       shell: "sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm -y"
     - name: config manager enabled 
