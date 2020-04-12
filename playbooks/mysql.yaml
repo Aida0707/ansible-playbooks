@@ -55,7 +55,7 @@
   # MySQL Configuration
     - name: Set the root password
       mysql_user:
-        name: root
+        name: centos
         password: "{{ som3_pa55_wo7d }}"
         login_unix_socket: /var/run/mysqld/mysqld.sock
       tags: [ mysql, mysql-root ]
@@ -65,7 +65,7 @@
         name: ''
         host_all: yes
         state: absent
-        login_user: root
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
 
@@ -73,7 +73,7 @@
       mysql_db:
         name: test
         state: absent
-        login_user: es2-user
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
 
@@ -81,7 +81,7 @@
       mysql_db:
         name: "{{ mysql_db }}"
         state: present
-        login_user: es2-user
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
 
@@ -91,7 +91,7 @@
         password: "{{ bob_s_pa55wo7d }}"
         priv: "{{ mysql_db }}.*:ALL"
         state: present
-        login_user: root
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
       mysql_user:
@@ -99,7 +99,7 @@
         password: "{{ Katty_s_pa55wo7d }}"
         priv: "{{ mysql_db }}.*:ALL"
         state: present
-        login_user: root
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
       mysql_user:
@@ -107,7 +107,7 @@
         password: "{{ Ben_s_pa55wo7d }}"
         priv: "{{ mysql_db }}.*:ALL"
         state: present
-        login_user: root
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
       mysql_user:
@@ -115,7 +115,7 @@
         password: "{{ Lisa_s_pa55wo7d }}"
         priv: "{{ mysql_db }}.*:ALL"
         state: present
-        login_user: root
+        login_user: centos
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
   # UFW Configuration
