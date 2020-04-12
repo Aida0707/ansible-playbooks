@@ -5,7 +5,6 @@
   become_method: sudo
   connection: ssh
   ignore_errors: false 
-
   tasks:
     - name: Install prerequisites
       shell: name=aptitude update_cache=yes state=latest force_apt_get=yes
@@ -92,7 +91,7 @@
         password: "{{ bob_s_pa55wo7d }}"
         priv: "{{ mysql_db }}.*:ALL"
         state: present
-        login_user:ec2-user
+        login_user: ec2-user
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
       mysql_user:
