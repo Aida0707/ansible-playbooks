@@ -8,6 +8,5 @@
       zone: "aidadevops.com"
       record: “aidadevops.com
       type: NS
-      value: "3.11.250.160"
       ttl: 172800
       hosted_zone_id: "Z01304741G3I6QPTY8X8K"
