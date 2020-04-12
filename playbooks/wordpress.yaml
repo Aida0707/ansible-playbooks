@@ -1,64 +1,75 @@
 ---
-- name: Installs wordpress
-  hosts: localhost
-  become: yes
+- name: Install wordpress on CentOS 7 
+  gather_facts: no 
+  hosts: all  
+  become: true
   become_method: sudo
-  tasks:
-    - name: Install necessary packages
-      package:
-        name: "{{item}}"
+  user: centos     
+  tasks: 
+    - name: Install httpd
+      package: 
+        name: "{{ item }}"
         state: latest
       with_items:
-       - epel-release
-       - wget 
-       - unzip
-       - mariadb-server
-      ignore_errors: true
+        - httpd
+        - php
+        - mariadb-server
+        - mysql
+        - elinks
+        - php-mysql
+        - php-gd 
+      ignore_errors: yes 
 
-  
-    - name: install php
-      shell: sudo yum install php -y
-
-    - name: Download wordpress Package
+    - name: Download wordpress
       get_url:
-        url: https://wordpress.org/wordpress-5.2.1.tar.gz
+        url: https://wordpress.org/latest.tar.gz 
         dest: /tmp/
 
-    - name: Unzip wordpres file
-      unarchive:
-        src: "/tmp/wordpress-5.2.1.tar.gz"    
-        dest: "/var/www/html"
-        remote_src: yes
-      become: yes
-      become_method: sudo
+    - name: Unzip wordpress
+      unarchive: 
+        src: /tmp/wordpress-5.4.tar.gz
+        dest: /var/www/html/
+        remote_src: yes 
 
-    - name: Move files to html folder
-      shell: "mv /var/www/html/wordpress/* /var/www/html"
-      become: yes
-      become_method: sudo
-      ignore_errors: yes
+    - name: move files
+      shell: "mv /var/www/html/wordpress/*  /var/www/html/"
+      ignore_errors: yes 
 
-    - name: Restart httpd
-      systemd:
-        name: httpd
-        state: restarted  
-        enabled: yes
-      become: yes
-      become_method: sudo
+    - name: Move index.html 
+      shell: "mv /var/www/html/index.html /tmp/"
+      ignore_errors: true
 
-    - name: Create 1 user bob
+    - name: run apache 
+      systemd: 
+        name: httpd 
+        state: restarted 
+        enabled: yes 
+      ignore_errors: yes 
+    - name: Add Bob
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa.pub
       user:
         name: bob
-        generate_ssh_key: yes
-    - name: Create 1 user lisa
-      user:
-        name: lisa
-        generate_ssh_key: yes
-    - name: Create 1 user ben
+        state: present      
+     - name: Add Ben
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa.pub
       user:
         name: ben
-        generate_ssh_key: yes
-    - name: Create 1 user kattie
+        state: present 
+    - name: Add Lisa
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa.pub
       user:
-        name: jsmith
-        generate_ssh_key: yes
+        name: lisa
+        state: present
+    - name: Add Katty
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa.pub
+      user:
+        name: katty
+        state: present
