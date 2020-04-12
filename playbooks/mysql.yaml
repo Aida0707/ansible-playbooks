@@ -6,15 +6,9 @@
   connection: ssh
   ignore_errors: true
 
-  - name: Start Mariadb
-    when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
-    systemd: 
-      name: mariadb
-      state: started
-    ignore_errors: true
-
   - name: Enable mariadb
     shell: "systemctl enable mariadb"
+    ignore_errors: true
 
   - name: Set the root password
     mysql_user:
@@ -22,6 +16,7 @@
       password: "{{ som3_pa55_wo7d }}"
       login_unix_socket: /var/run/mysqld/mysqld.sock
     tags: [ mysql, mysql-root ]
+    ignore_errors: true
 
   - name: Creates database for WordPress
     mysql_db:
@@ -30,6 +25,8 @@
       login_user: root
       login_password: "{{ som3_pa55_wo7d }}"
     tags: [ mysql ]  
+    ignore_errors: true
+
   - name: Create MySQL user for WordPress
     mysql_user:
       name: "{{ Aida }}"
@@ -38,4 +35,5 @@
       state: present
       login_user: root
       login_password: "{{ som3_pa55_wo7d }}"
-    tags: [ mysql ]    
+    tags: [ mysql ]  
+    ignore_errors: true  
