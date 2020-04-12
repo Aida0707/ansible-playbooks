@@ -6,10 +6,6 @@
   connection: ssh
   ignore_errors: true
 
-  - name: Enable mariadb
-    shell: "systemctl enable mariadb"
-    ignore_errors: true
-
   - name: Set the root password
     mysql_user:
       name: root
