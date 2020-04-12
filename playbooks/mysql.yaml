@@ -1,0 +1,66 @@
+---
+- name: Wordpress
+  hosts: localhost
+  become: true
+  become_method: sudo
+  connection: ssh
+  ignore_errors: false 
+
+  tasks:
+    - name: Set the root password
+      mysql_user:
+        name: root
+        password: "{{ som3_pa55_wo7d }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      tags: [ mysql, mysql-root ]
+
+    - name: Creates database for WordPress
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+
+    - name: Create MySQL user for WordPress
+      mysql_user:
+        name: "{{ Aida }}"
+        password: "{{ Aidapa55wo7d }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      mysql_user:
+        
+    - name: "UFW - Allow HTTP on port {{ 80 }}"
+      ufw:
+        rule: allow
+        port: "{{ 80 }}"
+        proto: tcp
+      tags: [ system ]
+
+    - name: Set permissions for directories
+      shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type d -exec chmod 750 {} \\;"
+      tags: [ wordpress ]
+
+    - name: Set permissions for files
+      shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type f -exec chmod 640 {} \\;"
+      tags: [ wordpress ]
+
+    - name: Set up wp-config
+      template:
+        src: "files/wp-config.php.j2"
+        dest: "/var/www/{{ merv3.com }}/wordpress/wp-config.php"
+      tags: [ wordpress ]
+
+      handlers:
+    - name: Reload Apache
+      service:
+        name: apache
+        state: reloaded
+
+    - name: Restart Apache
+      service:
+        name: apache
+        state: restarted
