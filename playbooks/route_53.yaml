@@ -2,11 +2,25 @@
 - name: Create route53 entry
   hosts: 3.11.250.160
   tasks:
-  - name: Route53 a record
+  - name: Route53 record
     route53:
       state: “present”
       zone: "aidadevops.com"
       record: “aidadevops.com
       type: NS
       ttl: 172800
-      hosted_zone_id: "Z01304741G3I6QPTY8X8K"
+      hosted_zone_id: "Z01304741G3I6QPTY8X8K" 
+  - name: Deploy on OpenStack
+    hosts: localhost
+    gather_facts: false
+    tasks:
+  - name: Deploy an instance
+    os_server:
+      state: present
+      key_name: bastion
+      wait: yes
+      flavor: t2.nano
+      network: public
+      meta:
+      hostname: aidadevops.com 
+
