@@ -35,24 +35,3 @@
       tags: [ mysql ]
       mysql_user:
       ignore_errors: true
-        
-    - name: "UFW - Allow HTTP on port {{ 80 }}"
-      ufw:
-        rule: allow
-        port: "{{ 80 }}"
-        proto: tcp
-      tags: [ system ]
-      ignore_errors: true
-
-      handlers:
-    - name: Reload Apache
-      service:
-        name: apache
-        state: reloaded
-      ignore_errors: true  
-
-    - name: Restart Apache
-      service:
-        name: apache
-        state: restarted
-      ignore_errors: true  
