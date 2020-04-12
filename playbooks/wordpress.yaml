@@ -21,11 +21,13 @@
       shell: "sudo yum-config-manager --enable remi-php72"
     - name : update httpd PHP 
       shell: "sudo yum install httpd php php-common php-opcache php-mcrypt php-cli php-gd php-curl php-mysql mysql -y" 
+      ignore_errors: true
 
     - name: Download wordpress Package
       get_url:
         url: https://wordpress.org/wordpress-5.2.1.tar.gz
         dest: /tmp/
+      ignore_errors: true  
 
     - name: Unzip wordpres file
       unarchive:
@@ -34,6 +36,7 @@
         remote_src: yes
       become: yes
       become_method: sudo
+      ignore_errors: true
 
     - name: Move files to html folder
       shell: "mv /var/www/html/wordpress/* /var/www/html"
