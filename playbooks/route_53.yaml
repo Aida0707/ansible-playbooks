@@ -11,9 +11,3 @@
       ttl: 172800
       hosted_zone_id: "Z01304741G3I6QPTY8X8K" 
       ignore_errors: true
-  - name: Hosts
-    hosts: localhost
-    tasks:
-    - name: Change host 
-      host: 3.11.250.160
-      ignore_errors: true
