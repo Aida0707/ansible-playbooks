@@ -4,7 +4,7 @@
   become: true
   become_method: sudo
   connection: ssh
-  ignore_errors: false 
+  ignore_errors: true
 
   tasks:
     - name: Set the root password
@@ -13,6 +13,7 @@
         password: "{{ som3_pa55_wo7d }}"
         login_unix_socket: /var/run/mysqld/mysqld.sock
       tags: [ mysql, mysql-root ]
+      ignore_errors: true
 
     - name: Creates database for WordPress
       mysql_db:
@@ -21,6 +22,7 @@
         login_user: root
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
+      ignore_errors: true
 
     - name: Create MySQL user for WordPress
       mysql_user:
@@ -32,6 +34,7 @@
         login_password: "{{ som3_pa55_wo7d }}"
       tags: [ mysql ]
       mysql_user:
+      ignore_errors: true
         
     - name: "UFW - Allow HTTP on port {{ 80 }}"
       ufw:
@@ -39,28 +42,27 @@
         port: "{{ 80 }}"
         proto: tcp
       tags: [ system ]
+      ignore_errors: true
 
     - name: Set permissions for directories
       shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type d -exec chmod 750 {} \\;"
       tags: [ wordpress ]
+      ignore_errors: true
 
     - name: Set permissions for files
       shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type f -exec chmod 640 {} \\;"
       tags: [ wordpress ]
-
-    - name: Set up wp-config
-      template:
-        src: "files/wp-config.php.j2"
-        dest: "/var/www/{{ merv3.com }}/wordpress/wp-config.php"
-      tags: [ wordpress ]
+      ignore_errors: true
 
       handlers:
     - name: Reload Apache
       service:
         name: apache
         state: reloaded
+      ignore_errors: true  
 
     - name: Restart Apache
       service:
         name: apache
         state: restarted
+      ignore_errors: true  
