@@ -17,7 +17,7 @@
 
     - name: Creates database for WordPress
       mysql_db:
-        name: "{{ mysql_db }}"
+        name: "{{ mariadb-server }}"
         state: present
         login_user: root
         login_password: "{{ som3_pa55_wo7d }}"
@@ -28,7 +28,7 @@
       mysql_user:
         name: "{{ Aida }}"
         password: "{{ Aidapa55wo7d }}"
-        priv: "{{ mysql_db }}.*:ALL"
+        priv: "{{ mariadb-server }}.*:ALL"
         state: present
         login_user: root
         login_password: "{{ som3_pa55_wo7d }}"
