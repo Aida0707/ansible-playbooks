@@ -44,11 +44,6 @@
       tags: [ system ]
       ignore_errors: true
 
-    - name: Set permissions for directories
-      shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type d -exec chmod 750 {} \\;"
-      tags: [ wordpress ]
-      ignore_errors: true
-
       handlers:
     - name: Reload Apache
       service:
