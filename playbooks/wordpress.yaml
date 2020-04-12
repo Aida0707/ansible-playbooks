@@ -40,8 +40,25 @@
 	  become: yes
 	  become_method: sudo
 	  ignore_errors: yes
-	
-  - name: Restart httpd
+
+  - name: Creates database for Wordpress
+    mysql_db:
+      name: "{{ mysql_db }}"
+      state: present
+      login_user: ec2-user
+      login_password: "{{ som3_pa55_wo7d }}"  
+    tags: [ mysql ]  
+
+  - name: Create MYSQL user for Wordpress
+    mysql_user:
+      name: "{{Aida}}"
+      password: "{{ aida9494 }}"
+      priv: "{{ mysql_db }} .*:ALL"
+      state: present
+      login_user: es2-user
+      login_password: "{{ som3_pa55_wo7d }}"
+
+	- name: Restart httpd
 	  systemd:
 	    name: httpd
 	    state: restarted  
