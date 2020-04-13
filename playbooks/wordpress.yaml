@@ -1,95 +1,71 @@
 ---
-- name: install dependencies
-  package:
-    name:
-      - httpd 
-      - mariadb 
-      - mariadb-server 
-      - php 
-      - php-pdo_mysql 
-      - php-xml 
-      - php-gd 
-      - wget 
-      - nano
-      - policycoreutils-python
-      - MySQL-python
-    state: installed
+- name: Installs wordpress
+  hosts: localhost
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install necessary packages
+      package:
+        name: "{{item}}"
+        state: latest
+      with_items:
+       - epel-release
+       - wget 
+       - unzip
+       - mariadb-server
+      ignore_errors: true
 
-- name: create wordpress dir
-  file:
-    path: "/var/www/html/{{ domain }}"
-    state: directory
-    owner: apache
-    group: apache
-    mode: 0755
+  
+    - name: Install epel-release
+      shell: "sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm -y"
+    - name: config manager enabled 
+      shell: "sudo yum-config-manager --enable remi-php72"
+    - name : update httpd PHP 
+      shell: "sudo yum install httpd php php-common php-opcache php-mcrypt php-cli php-gd php-curl php-mysql mysql -y" 
+      ignore_errors: true
 
-- name: get wordpress
-  unarchive:
-    src: https://wordpress.org/latest.tar.gz
-    dest: /var/www/html/{{ domain }}
-    extra_opts: --strip=1
-    remote_src: yes
-    owner: apache
-    group: apache
-  notify: get API information
+    - name: Download wordpress Package
+      get_url:
+        url: https://wordpress.org/wordpress-5.2.1.tar.gz
+        dest: /tmp/
 
-- name: start mariadb
-  service:
-    name: mariadb
-    state: started
-    enabled: true
+    - name: Unzip wordpres file
+      unarchive:
+        src: "/tmp/wordpress-5.2.1.tar.gz"    
+        dest: "/var/www/html"
+        remote_src: yes
+      become: yes
+      become_method: sudo
 
-- name: create database
-  mysql_db:
-    name: "wp_{{ domain }}_db"
-    state: present
+    - name: Move files to html folder
+      shell: "mv /var/www/html/wordpress/* /var/www/html"
+      become: yes
+      become_method: sudo
+      ignore_errors: yes
 
-- name: create database user
-  mysql_user:
-    name: "{{ db_user }}"
-    password: "{{ db_pass }}"
-    priv: '{{ db_name }}.*:ALL,GRANT'
-  notify: secure mariadb
+    - name: Restart httpd
+      systemd:
+        name: httpd
+        state: restarted  
+        enabled: yes
+      become: yes
+      become_method: sudo
+      ignore_errors: yes
 
-- name: run API handler now
-  meta: flush_handlers
-
-- name: set mariadb root password
-  mysql_user:
-    name: root
-    password: "{{ root_db_pass }}"
-
-- name: copy template
-  template:
-    src: wp-config.j2
-    dest: /var/www/html/{{ domain }}/wp-config.php
-
-- name: copy httpd template
-  template:
-    src: httpd.j2
-    dest: /etc/httpd/conf/httpd.conf
-    owner: root
-    group: root
-    mode: 0644
-
-- name: start httpd
-  service:
-    name: httpd
-    state: started
-    enabled: true
-
-- name: ensure firewalld is running
-  service:
-    name: firewalld
-    state: started
-    enabled: true
-
-- name: open firewall services
-  firewalld:
-    service: "{{ item }}"
-    permanent: true
-    state: enabled
-    immediate: true
-  with_items:
-    - https
-    - http
+    - name: Create 1 user bob
+      user:
+        name: bob
+        generate_ssh_key: yes
+    - name: Create 1 user lisa
+      user:
+        name: lisa
+        generate_ssh_key: yes
+    - name: Create 1 user ben
+      user:
+        name: ben
+        generate_ssh_key: yes
+    - name: Create 1 user kattie
+      user:
+        name: jsmith
+        generate_ssh_key: yes
+        ignore_errors: yes

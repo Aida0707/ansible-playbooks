@@ -1,0 +1,10 @@
+---
+-name: Create ec2 instance
+  tasks:
+    key_name: bastion
+    instance_type: t2.micro
+    image: ami-123456
+    wait: yes
+    count: 3
+    vpc_subnet_id: subnet-0041d65920aa13933
+    assign_public_ip: yes

@@ -1,0 +1,140 @@
+---
+- name: Wordpress
+  hosts: localhost
+  become: true
+  become_method: sudo
+  connection: ssh
+  ignore_errors: false 
+
+  tasks:
+  # MySQL Configuration
+    - name: Set the root password
+      mysql_user:
+        name: root
+        password: "{{ som3_pa55_wo7d }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+      tags: [ mysql, mysql-root ]
+      ignore_errors: true
+
+    - name: Remove all anonymous user accounts
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      ignore_errors: true
+
+    - name: Remove the MySQL test database
+      mysql_db:
+        name: test
+        state: absent
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      ignore_errors: true
+
+    - name: Creates database for WordPress
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      ignore_errors: true
+
+    - name: Create MySQL user for WordPress
+      mysql_user:
+        name: "{{ Bob }}"
+        password: "{{ bob_s_pa55wo7d }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      mysql_user:
+        name: "{{ Katty }}"
+        password: "{{ Katty_s_pa55wo7d }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      ignore_errors: true
+      mysql_user:
+        name: "{{ Ben }}"
+        password: "{{ Ben_s_pa55wo7d }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      ignore_errors: true
+      mysql_user:
+        name: "{{ Lisa }}"
+        password: "{{ Lisa_s_pa55wo7d }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ som3_pa55_wo7d }}"
+      tags: [ mysql ]
+      ignore_errors: true
+  # UFW Configuration
+    - name: "UFW - Allow HTTP on port {{ 80 }}"
+      ufw:
+        rule: allow
+        port: "{{ 80 }}"
+        proto: tcp
+      tags: [ system ]
+      ignore_errors: true
+
+  # WordPress Configuration
+    - name: Download and unpack latest WordPress
+      unarchive:
+        src: https://wordpress.org/latest.tar.gz
+        dest: "/var/www/{{ merv3.com }}"
+        remote_src: yes
+        creates: "/var/www/{{ merv3.com }}/wordpress"
+      tags: [ wordpress ]
+      ignore_errors: true
+
+    - name: Set ownership
+      file:
+        path: "/var/www/{{ merv3.com }}"
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+      tags: [ wordpress ]
+      ignore_errors: true
+
+    - name: Set permissions for directories
+      shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type d -exec chmod 750 {} \\;"
+      tags: [ wordpress ]
+      ignore_errors: true
+
+    - name: Set permissions for files
+      shell: "/usr/bin/find /var/www/{{ merv3.com }}/wordpress/ -type f -exec chmod 640 {} \\;"
+      tags: [ wordpress ]
+      ignore_errors: true
+
+    - name: Set up wp-config
+      template:
+        src: "files/wp-config.php.j2"
+        dest: "/var/www/{{ merv3.com }}/wordpress/wp-config.php"
+      tags: [ wordpress ]
+      ignore_errors: true
+
+  handlers:
+    - name: Reload Apache
+      service:
+        name: apache
+        state: reloaded
+        ignore_errors: true
+
+    - name: Restart Apache
+      service:
+        name: apache
+        state: restarted
+        ignore_errors: true
