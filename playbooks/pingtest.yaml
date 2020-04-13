@@ -1,6 +1,7 @@
 ---
 - name: Check connectivity to target servers
+  hosts: localhost
   tasks:
-  - name: Ping test
-     ping:
-     hosts: all  
+        - name: Ping test
+          ping:
+   

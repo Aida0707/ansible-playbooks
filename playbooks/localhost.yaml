@@ -1,0 +1,8 @@
+---
+- name: attach key
+  hosts: localhost
+  become: true
+  become_method: sudo
+  tasks:
+  - name: attach ip
+    add_host: localhost "3.11.250.160"

@@ -1,0 +1,7 @@
+---
+- name: install wordpress
+  hosts: localhost "3.11.250.160"
+  become: yes
+  become_method: sudo 
+  roles:
+     wordpress:

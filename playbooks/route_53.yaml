@@ -1,14 +1,12 @@
 ---
 - name: Create route53 entry
-  hosts: 3.11.250.160
+  hosts: localhost
   tasks:
-  - name: Route53 record
-    route53:
-      state: “present”
-      zone: "aidadevops.com"
-      record: “wordpress.aidadevops.com
-      type: A
-      ttl: 300
-      ec2_access_key: "cat ~/.ssh/id_rsa.pub"
-      become_method: sudo
-      ignore_errors: true
+    - name: Route53 a record
+      route53:
+        state: "present"
+        zone: "dzhaida.com"
+        record: "dzhaida.com"
+        type: A
+        ttl: 300
+        value: "3.11.250.160" #change Ip
