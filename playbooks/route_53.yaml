@@ -6,7 +6,6 @@
       route53:
         state: "present"
         zone: "dzhaida.com"
-        record: "wordpress.dzhaida.com"
+        record: "dzhaida.com"
         type: A
-        ttl: 300
         value: "54.68.72.152" #change Ip

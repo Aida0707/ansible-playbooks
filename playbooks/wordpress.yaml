@@ -1,23 +1,22 @@
 ---
 - name: Installs wordpress
-  hosts: 54.68.72.152
+  hosts: all
   become: yes
   become_method: sudo 
   tasks:
-    - name: Install necessary packages
+  - name: Install necessary packages
       package:
         name: "{{item}}"
         state: latest
-      with_items:
+    with_items:
        - epel-release
        - wget 
        - unzip
        - mariadb-server
-      ignore_errors: true
-    - name: Install epel-release
+  - name: Install epel-release
       shell: "sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm -y"
       ignore_errors: true
-    - name: config manager enabled 
+   - name: config manager enabled 
       shell: "sudo yum-config-manager --enable remi-php72"
     - name : update httpd PHP 
       shell: "sudo yum install httpd php php-common php-opcache php-mcrypt php-cli php-gd php-curl php-mysql mysql -y" 
